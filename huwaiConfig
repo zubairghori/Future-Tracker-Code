@@ -1,0 +1,44 @@
+root@fwhlin:~ # lsusb | grep Huawei
+Bus 009 Device 007: ID 12d1:1f01 Huawei Technologies Co., Ltd. E353/E3131 (Mass storage mode)
+root@fwhlin:~ # 
+Create file
+
+vi /etc/usb_modeswitch.d/12d1:1f01
+With following content
+
+root@fwhlin:~ # cat /etc/usb_modeswitch.d/12d1:1f01
+# Huawei E3531s-2 - switch to modem mode instead of HiLink CDC-Ether mode
+TargetVendor=0x12d1
+TargetProduct=0x1f01
+
+# switch to 12d1:1001 (modem mode, 3 virtual serial ports)
+#MessageContent="55534243123456780000000000000011062000000100000000000000000000"
+
+# switch to 12d1:14dc (default HiLink CDC-Ether mode)
+MessageContent="55534243123456780000000000000a11062000000000000100000000000000"
+
+# switch to 12d1:1442 (debug mode with 2 virtual serial ports)
+# MessageContent="55534243000000000000000000000011060000000000000000000000000000"
+
+root@fwhlin:~ # 
+
+To switch to Modem Mode, run
+
+usb_modeswitch -I -W -c /etc/usb_modeswitch.d/12d1\:1f01
+If it worked, device will change to modem mode
+
+root@fwhlin:~ # lsusb | grep Hu
+Bus 009 Device 003: ID 12d1:14dc Huawei Technologies Co., Ltd. 
+root@fwhlin:~ # 
+Notice it changed name, also device ID changed to 14dc.
+
+
+ifconfig will list a new network interface usb0
+
+usb0      Link encap:Ethernet  HWaddr 9a:82:a1:91:20:32  
+          inet6 addr: fe80::9882:a1ff:fe91:2032/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:236 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:98 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:111083 (111.0 KB)  TX bytes:15412 (15.4 KB)
