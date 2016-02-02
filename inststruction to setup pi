@@ -7,3 +7,9 @@
 4:sudo apt-get install gpsd-clients
 5:sudo dpkg-reconfigure gpsd
 6:sudo leafpad /etc/inittab // comment the last line.
+
+# 7 for emacs texteditor
+7:sudo intall apt-get emacs
+
+# 8 for run tracker on everyy boot
+8:sudo crontab -e (add the program to run on startup)

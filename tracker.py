@@ -37,7 +37,7 @@ session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)
 while True:
         location =  GetCurrentLocation(4)
         if location is not None:
-           SendLocationToSevrer(location,"jldskjfdjf","abcs")
+           SendLocationToSevrer(location,"vxcsfsdffsczxc","zubair")
         else:
            print('Locaiotn is nil\n')
 
