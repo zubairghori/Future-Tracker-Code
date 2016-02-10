@@ -1,5 +1,5 @@
 # 1 and 2 for setup 3g device configuration.
-1:sudo apt-get install usb-modeswicth
+1:sudo apt-get install usb-modeswitch
 2:sudo leafpad /etc/usb_modeswitch.conf
 
 #3 and 4 for install gps library for python and 5 for automatic start gps on boot, 6 for configure the RX and TX port to recive data.
@@ -9,7 +9,10 @@
 6:sudo leafpad /etc/inittab // comment the last line.
 
 # 7 for emacs texteditor
-7:sudo intall apt-get emacs
+7:sudo  apt-get intsall emacs
 
-# 8 for run tracker on everyy boot
-8:sudo crontab -e (add the program to run on startup)
+#8 virtual keyboard
+8: sudo apt-get install matchbox-keyboard
+
+# 9 for run tracker on everyy boot
+9:sudo crontab -e (add the program to run on startup)

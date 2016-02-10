@@ -2,6 +2,7 @@
 from gps import *
 import urllib2
 import urllib
+import socket
 
 def GetCurrentLocation(timeDelay):
        report = session.next()  
@@ -32,13 +33,36 @@ def SendLocationToSevrer(Data,trackerUUID, name):
 
 
 
+def internet_on():
+    REMOTE_SERVER = "www.google.com"
+    try:
+       host = socket.gethostbyname(REMOTE_SERVER)
+       s = socket.create_connection((host,80),2)
+       return True
+    except:
+       pass
+    return False
+
+
+
+ 
 session = gps()
-session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)              
+session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)       
+       
 while True:
-        location =  GetCurrentLocation(4)
-        if location is not None:
-           SendLocationToSevrer(location,"vxcsfsdffsczxc","zubair")
-        else:
-           print('Locaiotn is nil\n')
+        
+       if internet_on() == True: 
+
+           fo = open("/home/pi/Desktop/abc.txt", "wb")
+           fo.write("i am writing:")
+           fo.close()
+
+           location =  GetCurrentLocation(4)
+           if location is not None:
+              SendLocationToSevrer(location,"vxcsfsdffsczxc","zubair")
+           else:
+              print('Locaiotn is nil\n')
 
 
+       else:
+           print("internet is not connected\n")
