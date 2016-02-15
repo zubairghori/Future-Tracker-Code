@@ -3,6 +3,7 @@ from gps import *
 import urllib2
 import urllib
 import socket
+from twisted.internet.defer import Deferred
 
 def GetCurrentLocation(timeDelay):
        report = session.next()  
@@ -47,19 +48,18 @@ def internet_on():
 
  
 session = gps()
-session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)       
+session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)
+
+d = Deferred()
+d.addCallback(SendLocationToSevrer)
        
 while True:
         
        if internet_on() == True: 
 
-           fo = open("/home/pi/Desktop/abc.txt", "wb")
-           fo.write("i am writing:")
-           fo.close()
-
            location =  GetCurrentLocation(4)
            if location is not None:
-              SendLocationToSevrer(location,"vxcsfsdffsczxc","zubair")
+              d.callback(location,"vxcsfsdffsczxc","zubair")
            else:
               print('Locaiotn is nil\n')
 
