@@ -38,7 +38,8 @@ def internet_on():
        pass
     return False
 
-
+def errBack(failure):
+    print failure
 
 class GpsPoller(threading.Thread):
   def __init__(self):
@@ -94,6 +95,10 @@ if __name__ == '__main__':
                d = Deferred()
                d.addCallback(SendLocationToSevrer)
                d.callback(location)
+
+               d.addErrback(errBack)
+               d.errback("some thing failed to send data :( \n")
+           
            else:
               print('Locaiotn is nil\n')
 
