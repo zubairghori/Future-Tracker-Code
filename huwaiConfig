@@ -42,3 +42,7 @@ usb0      Link encap:Ethernet  HWaddr 9a:82:a1:91:20:32
           TX packets:98 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:1000 
           RX bytes:111083 (111.0 KB)  TX bytes:15412 (15.4 KB)
+          
+          
+          
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="1f01", RUN+="/usr/sbin/usb_modeswitch -v 0x12d1 -p 0x1f01 -M '55534243123456780000000000000a11062000000000000100000000000000'"
