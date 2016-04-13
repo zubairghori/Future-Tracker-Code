@@ -1,3 +1,4 @@
+
 import os
 from gps import *
 from time import *
@@ -6,6 +7,7 @@ import threading
 import urllib2
 import urllib
 import socket
+import shelve
 from twisted.internet.defer import Deferred
 
 
@@ -15,8 +17,7 @@ gpsd = None #seting the global variable
 os.system('clear') #clear the terminal (optional)
  
 
-def SendLocationToSevrer(Data):
-   
+def SendLocationToSevrer(Data):   
     url = "https://zubair-app.herokuapp.com/Map"
     data = Data
     #data.update({'trackerUUID':trackerUUID, 'name':name})
@@ -24,6 +25,14 @@ def SendLocationToSevrer(Data):
     req = urllib2.Request(url,encodedData)
     res = urllib2.urlopen(req).read()   
     print(location)
+    print(res)
+
+
+def sendOfflineData(array):
+    url = "https://zubair-app.herokuapp.com/offline"
+    encodedData = urllib.urlencode({'array':array})
+    req = urllib2.Request(url,encodedData)
+    res = urllib2.urlopen(req).read()   
     print(res)
 
 
@@ -40,6 +49,27 @@ def internet_on():
 
 def errBack(failure):
     print failure
+
+
+def storeData(object):	
+	s=shelve.open("locationDB")
+	try:
+		s[object["timestamp"]]=object
+	finally:
+		s.close()
+
+
+
+def getData():
+	array=[]
+	s=shelve.open("locationDB")
+	try:
+		for k,v in s.iteritems():
+			array.append(v)
+                return array
+	finally:
+		s.close()
+	
 
 class GpsPoller(threading.Thread):
   def __init__(self):
@@ -84,30 +114,28 @@ if __name__ == '__main__':
  
 
 
-      if internet_on() == True: 
+      if internet_on() == True:       
 
-          # fo = open("/home/pi/Desktop/abc.txt", "wb")
-          # fo.write("i am writing:")
-          # fo.close()
 
-           location = {'latittude':gpsd.fix.latitude , 'longitude':gpsd.fix.longitude , 'speed':gpsd.fix.speed ,'trackerUUID':'vxcsfsdffsczxc', 'name':'zubair'}
-           if location is not None:
-               d = Deferred()
-               d.addCallback(SendLocationToSevrer)
-               d.callback(location)
-
-               d.addErrback(errBack)
-               d.errback("some thing failed to send data :( \n")
+         #  if len(getData()) == 0:   	
+                   location = {'latittude':gpsd.fix.latitude , 'longitude':gpsd.fix.longitude , 'speed':gpsd.fix.speed ,'trackerUUID':'vxcsfsdffsczxc', 'name':'zubair'}
+                   if location is not None:
+                       d = Deferred()
+                       d.addCallback(SendLocationToSevrer)
+                       d.callback(location)
            
-           else:
-              print('Locaiotn is nil\n')
-
+                   else:
+                       print('Locaiotn is nil\n')
+          # else:
+		   print getData() 	
+                  # sendOfflineData(getData())
+               
 
       else:
            print("internet is not connected\n")
-
-
-
+           location = {'latittude':gpsd.fix.latitude , 'longitude':gpsd.fix.longitude , 'speed':gpsd.fix.speed ,"timestamp":gpsd.utc}
+           storeData(location)
+      
       time.sleep(5) #set to whatever
  
   except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
